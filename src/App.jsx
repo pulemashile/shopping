@@ -1,16 +1,24 @@
 import React from 'react';
-// import ItemForm from './ItemForm';
-// import ItemList from './ItemList';
+import ItemForm from './ItemForm';
+import ItemList from './ItemList';
 import Loginpage from './loginpage';
 
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import ItemPage from './ItemComponent';
 
 function App() {
   return (
     <div className="app">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Loginpage />} />
+
+          <Route path="/add" element={<ItemPage />} />
+          
+                  
+        </Routes>
+      </BrowserRouter>
       
-      {/* <ItemForm />
-      <ItemList /> */}
-      <Loginpage/>
     </div>
   );
 }

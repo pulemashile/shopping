@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeItem } from './itemsSlice';
-import ItemForm from './Itemform.jsx';
+import { removeItem } from './ItemsSlice';
+import ItemForm from './ItemForm';
 
 function ItemList() {
   const items = useSelector((state) => state.items.list);
   const dispatch = useDispatch();
-  const [showForm, setShowForm] = useState(false); // Manage form visibility
-  const [editingItem, setEditingItem] = useState(null); // Manage item being edited
+  const [showForm, setShowForm] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
 
   const handleEdit = (item) => {
     setEditingItem(item);
@@ -19,38 +19,39 @@ function ItemList() {
     setShowForm(false);
   };
 
- 
-
   return (
-    <div className="item-list">
-     
-      
-      {/* Show the form based on state */}
-      {showForm && <ItemForm currentItem={editingItem} onCancel={handleCancel} />}
-      
-     
-      <ul>
-        {items.map((item) => (
-          <li key={item.id}>
-            <strong>{item.name}</strong> (Quantity: {item.quantity})
-            {item.notes && <p>Notes: {item.notes}</p>}
-            {item.category && <p>Category: {item.category}</p>}
-            {item.tags.length > 0 && (
-              <div className="tags-preview">
-                {item.tags.map((tag, index) => (
-                  <span key={index} className="tag">
-                    {tag}
-                  </span>
-                ))}
+    <div className="p-6">
+      {showForm && (
+        <ItemForm
+          item={editingItem}
+          onCancel={handleCancel}
+        />
+      )}
+
+      {items.length === 0 ? (
+        <p>No items to display.</p>
+      ) : (
+        <ul className="space-y-4">
+          {items.map((item) => (
+            <li key={item.id} className="p-4 bg-white shadow-md rounded-md flex flex-col gap-2">
+              <strong className="text-lg">{item.name}</strong> (Quantity: {item.quantity})
+              {item.notes && <p className="text-gray-600">Notes: {item.notes}</p>}
+              {item.category && <p className="text-gray-600">Category: {item.category}</p>}
+              {item.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {item.tags.map((tag, index) => (
+                    <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">{tag}</span>
+                  ))}
+                </div>
+              )}
+              <div className="flex gap-2 mt-2">
+                <button onClick={() => handleEdit(item)} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Edit</button>
+                <button onClick={() => dispatch(removeItem(item.id))} className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Remove</button>
               </div>
-            )}
-            <button onClick={() => handleEdit(item)}>Edit</button>
-            <button onClick={() => dispatch(removeItem(item.id))}>
-              Remove
-            </button>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
