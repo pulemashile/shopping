@@ -8,6 +8,7 @@ function ItemList() {
   const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleEdit = (item) => {
     setEditingItem(item);
@@ -19,6 +20,16 @@ function ItemList() {
     setShowForm(false);
   };
 
+  // Function to handle search query change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Function to filter items based on search query
+  const filteredItems = items.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="p-6">
       {showForm && (
@@ -28,11 +39,21 @@ function ItemList() {
         />
       )}
 
-      {items.length === 0 ? (
+      <div className="mb-4">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search items..."
+          className="p-2 border border-gray-300 rounded-md shadow-sm w-full"
+        />
+      </div>
+
+      {filteredItems.length === 0 ? (
         <p>No items to display.</p>
       ) : (
         <ul className="space-y-4">
-          {items.map((item) => (
+          {filteredItems.map((item) => (
             <li key={item.id} className="p-4 bg-white shadow-md rounded-md flex flex-col gap-2">
               <strong className="text-lg">{item.name}</strong> (Quantity: {item.quantity})
               {item.notes && <p className="text-gray-600">Notes: {item.notes}</p>}
