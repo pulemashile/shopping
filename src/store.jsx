@@ -10,3 +10,5 @@ export const store = configureStore({
 
   },
 });
+
+///HOLDS THE STATE OF THE INTIREB APP

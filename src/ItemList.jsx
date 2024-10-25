@@ -1,44 +1,76 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeItem } from './ItemsSlice';
+import { removeItem, updateItem } from './ItemsSlice';
 import ItemForm from './ItemForm';
 
+
+
 function ItemList() {
-  const items = useSelector((state) => state.items.list);
-  const dispatch = useDispatch();
   const [showForm, setShowForm] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+
+  const dispatch = useDispatch();
+  const items = useSelector((state) => state.items.list); // assuming you have a state with items.list
+
+
+
   const handleEdit = (item) => {
     setEditingItem(item);
+    setIsEditMode(true);
     setShowForm(true);
   };
 
-  const handleCancel = () => {
+
+  const handleSave = (item) => {
+    const updatedItem = { ...item };
+    dispatch(updateItem({ id: item.id, updatedItem }));
     setEditingItem(null);
+    setIsEditMode(false);
     setShowForm(false);
   };
 
-  // Function to handle search query change
+
+  const handleCancel = () => {
+    setEditingItem(null);
+    setIsEditMode(false);
+    setShowForm(false);
+  };
+
+
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  // Function to filter items based on search query
+
   const filteredItems = items.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  return (
-    <div className="p-6">
-      {showForm && (
-        <ItemForm
-          item={editingItem}
-          onCancel={handleCancel}
-        />
-      )}
 
+  return (
+    <div className="p-6 bg-[#E5D9F2] shadow-xl " >
+      <div className="flex justify-between mb-4">
+        
+        <button onClick={isEditMode ? handleSave : () => setShowForm(true)} className="px-4 py-2 bg-[#D6589F] text-white rounded-md hover:bg-[#D20062]">
+          {isEditMode ? 'Save' : 'Add Item'}
+        </button>
+      </div>
+      {showForm && (
+        <div className="mb-4">
+          {isEditMode ? (
+            <ItemForm
+              item={editingItem}
+              onCancel={handleCancel}
+              onSave={handleSave}
+            />
+          ) : (
+            <ItemForm />
+          )}
+        </div>
+      )}
       <div className="mb-4">
         <input
           type="text"
@@ -48,12 +80,11 @@ function ItemList() {
           className="p-2 border border-gray-300 rounded-md shadow-sm w-full"
         />
       </div>
-
       {filteredItems.length === 0 ? (
         <p>No items to display.</p>
       ) : (
         <ul className="space-y-4">
-          {filteredItems.map((item) => (
+          {filteredItems.map((item, index) => (
             <li key={item.id} className="p-4 bg-white shadow-md rounded-md flex flex-col gap-2">
               <strong className="text-lg">{item.name}</strong> (Quantity: {item.quantity})
               {item.notes && <p className="text-gray-600">Notes: {item.notes}</p>}
@@ -76,5 +107,4 @@ function ItemList() {
     </div>
   );
 }
-
 export default ItemList;

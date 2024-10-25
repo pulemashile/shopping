@@ -5,7 +5,7 @@ import ItemList from './ItemList';
 function ItemPage() {
   return (
     <div>
-      <ItemForm />
+      
       <ItemList />
     </div>
   );

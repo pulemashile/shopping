@@ -27,3 +27,4 @@ const authSlice = createSlice({
 export const { login, logout, register } = authSlice.actions;
 
 export default authSlice.reducer;
+//UPDATES THYE STATES,,STATES IS THE CURRENT SITUATION OF  AN APLICATION
